@@ -1,0 +1,26 @@
+{
+  "name": "@brycemarshall/simple-exception",
+  "version": "1.0.0",
+  "description": "A lightweight implementation of the standard ECMAScript Error interface which is compatible with the @brycemarshall/exception Exception type.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bryce-marshall/simple-exception"
+  },
+  "main": "index",
+  "types": "index",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "exception",
+    "error",
+    "custom error",
+    "typed error",
+    "custom exception",
+    "typed exception"
+  ],
+  "author": "Bryce Marshall",
+  "license": "MIT",
+  "dependencies": {
+  }
+}

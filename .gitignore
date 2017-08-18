@@ -1,0 +1,4 @@
+node_modules
+simple-exception.nodejs/build
+*.d.ts
+*.js

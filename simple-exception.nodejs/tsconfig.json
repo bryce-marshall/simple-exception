@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "target": "es2015",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "removeComments": true,
+        "sourceMap": true,
+        "declaration": true,
+        "noImplicitAny": false,
+        "outDir": "build"
+    },
+    "include": [
+        "*.ts",
+        "package-src"
+    ],
+    "exclude": [
+        ".vscode",
+        "build",
+        "node_modules"
+    ]
+}
