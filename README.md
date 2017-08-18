@@ -47,6 +47,9 @@ export declare class SimpleException extends Error implements ExceptionLike {
 ## Usage 
 
 ```ts
+
+import { SimpleException } from '@brycemarshall/simple-exception';
+
 try {
     throw new SimpleException("Timeout");
 }
@@ -56,8 +59,10 @@ catch (e) {
 }
 ```
 ```ts
+import { SimpleException as Exception } from '@brycemarshall/simple-exception';
+
 try {
-    throw new SimpleException("Foobar", "Your foo is incompatible with my bar.");
+    throw new Exception("Foobar", "Your foo is incompatible with my bar.");
 }
 catch (e) {
     if (e.isFoobarException)
@@ -67,11 +72,13 @@ catch (e) {
 ## Usage - Native Error Type Identification
 
 ```ts
+import { SimpleException as Exception } from '@brycemarshall/simple-exception';
+
 try {
     throw new RangeError();
 }
 catch (e) {
-    e = SimpleException.convert(e);
+    e = Exception.convert(e);
     if (e.isRangeErrorException)
         console.log("Caught an Error of type 'RangeError'");
 }
