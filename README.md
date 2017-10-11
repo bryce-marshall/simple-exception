@@ -1,6 +1,6 @@
 # @brycemarshall/exception
 
-A lightweight implementation of the standard ECMAScript Error interface which is compatible with the @brycemarshall/exception Exception type.
+A lightweight implementation of the standard ECMAScript Error interface that is compatible with the @brycemarshall/exception Exception type.
 
 ## Installation
 

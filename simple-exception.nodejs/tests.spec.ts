@@ -2,7 +2,42 @@ import { suite, test } from "mocha-typescript";
 import { expect } from "chai";
 import { SimpleException } from "./package-src/index";
 
+class ExtendedException extends SimpleException {
+    constructor(message?: string) {
+        super("Extended", message);
+    }
+
+    get customProperty(): string {
+        return "ExtendedException.customProperty value";
+    }
+}
+
+export class Exception extends SimpleException {
+    constructor(errorName: string, message?: string) {
+        super(errorName, message);
+    }
+}
+
+class FurtherExtendedException extends Exception {
+    constructor(message?: string) {
+        super("FurtherExtended", message)
+    }
+
+    get customProperty(): string {
+        return "FurtherExtendedException.customProperty value";
+    }
+}
+
 @suite class SimpleExceptionTests {
+    @test("Is Error Native") IsErrorNative() {
+        let e = new Error();
+        expect(SimpleException.isError(e)).to.equal(true);
+    }
+     
+    @test("Is Error Exception") IsErrorException() {
+        let e = new SimpleException("Test");
+        expect(SimpleException.isError(e)).to.equal(true);
+    }    
     @test("Application No Message") ApplicationNoMessage() {
         let e = new SimpleException("Application");
         assertException(e, "Application");
@@ -49,7 +84,7 @@ import { SimpleException } from "./package-src/index";
             throw new Error("Message");
         } catch (e) {
             e = SimpleException.convert(e);
-            expect(e.toString()).to.equal("Error: Message");
+            expect(e.toString()).to.equal("Error: Message");            
         }
     }
 
@@ -58,6 +93,29 @@ import { SimpleException } from "./package-src/index";
             throw new SimpleException("InvalidOperation", "Message");
         } catch (e) {
             expect(e.toString()).to.equal("InvalidOperation Error: Message");
+            expect(typeof(e.stack)).to.equal("string");
+        }
+    }
+
+    @test("Extended Exception") ExtendedException() {
+        try {
+            throw new ExtendedException("A custom message");
+        } catch (e) {            
+            assertException(e, "Extended");
+            expect(e.toString()).to.equal("Extended Error: A custom message");
+            expect(e.customProperty).to.equal("ExtendedException.customProperty value");
+            expect(typeof(e.stack)).to.equal("string");
+        }
+    }
+
+    @test("Further Extended Exception") FurtherExtendedException() {
+        try {
+            throw new FurtherExtendedException("A custom message");
+        } catch (e) {
+            assertException(e, "FurtherExtended");
+            expect(e.toString()).to.equal("FurtherExtended Error: A custom message");
+            expect(e.customProperty).to.equal("FurtherExtendedException.customProperty value");
+            expect(typeof(e.stack)).to.equal("string");
         }
     }
 }
@@ -79,4 +137,6 @@ const assertException = (error: Error, expectedType: string, expectedMessage?: s
     expect(error.name).to.equal(expectedType, "name property missing or invalid.");
     if (expectedMessage)
         expect(error.message).to.equal(expectedMessage, "message property invalid.");
+    expect(typeof(error.stack)).to.equal("string");
+    expect(error.stack.length).greaterThan(0);
 }

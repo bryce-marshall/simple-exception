@@ -7,21 +7,33 @@ export interface ExceptionLike extends Error {
  * The base class for custom error types implementing the standard ECMAScript Error interface.
  * Instances of this type may be instantiated directly (without subclassing) in order to create custom error instances.
  */
-export class SimpleException extends Error implements ExceptionLike {
+export class SimpleException implements ExceptionLike {
+    private ___e__;
+    readonly name: string;
+    readonly message: string;
     /**
      * Creates a new SimpleException instance.
      * @param errorName The name (implied type) of the Error object implemented by this instance.
      * @param message An optional error message.
     */
     constructor(errorName: string, message?: string) {
+        if (errorName == null) throw new SimpleException("ArgumentNull", 'The argument "errorName" cannot be null.');
+        this.___e__ = new Error();
+
         if (!message)
             message = "Error of type " + errorName;
 
-        super(message);
         this.message = message;
         this.name = errorName;
+        let evalProp = "is" + errorName + "Exception";
 
-        SimpleException.convert(this);
+        if (this[evalProp] == undefined) {
+            this[evalProp] = SimpleException.prototype.isException;
+        }
+    }
+
+    get stack(): string {
+        return this.___e__.stack;
     }
 
     /**
@@ -72,12 +84,12 @@ export class SimpleException extends Error implements ExceptionLike {
 
         return <ExceptionLike>error;
     }
-    
+
     /**
      * Returns true if the specified instance is an Error object, otherwise returns false.
      * @param value The value to test.
      */
     static isError(value: any) {
         return value && typeof (value.message) == "string" && typeof (value.stack) == "string" && typeof (value.name) == "string";
-    }    
+    }
 }
