@@ -1,6 +1,34 @@
 export interface ExceptionLike extends Error {
     readonly isException: boolean;
+    readonly stack: string;
     toString(): string;
+}
+
+class _Error extends Error {
+    constructor(e: SimpleException, name: string, message?: string) {
+        super(message);
+
+        if (Object.getPrototypeOf) {
+            let p = Object.getPrototypeOf(e);
+            for (let k in p) {
+                if (k == "constructor" || k == "message" || k == "stack") continue;
+                this[k] = p[k];
+            }
+        }
+        else {
+            for (let k in e) {
+                if (k == "message" || k == "stack") continue;
+                this[k] = e[k];
+            }
+        }
+
+        this.name = name;
+        let evalProp = "is" + name + "Exception";
+
+        if (this[evalProp] == undefined) {
+            this[evalProp] = SimpleException.prototype.isException;
+        }
+    }
 }
 
 /**
@@ -8,9 +36,9 @@ export interface ExceptionLike extends Error {
  * Instances of this type may be instantiated directly (without subclassing) in order to create custom error instances.
  */
 export class SimpleException implements ExceptionLike {
-    private ___e__;
     readonly name: string;
     readonly message: string;
+    readonly stack: string;
     /**
      * Creates a new SimpleException instance.
      * @param errorName The name (implied type) of the Error object implemented by this instance.
@@ -18,22 +46,11 @@ export class SimpleException implements ExceptionLike {
     */
     constructor(errorName: string, message?: string) {
         if (errorName == null) throw new SimpleException("ArgumentNull", 'The argument "errorName" cannot be null.');
-        this.___e__ = new Error();
 
         if (!message)
             message = "Error of type " + errorName;
 
-        this.message = message;
-        this.name = errorName;
-        let evalProp = "is" + errorName + "Exception";
-
-        if (this[evalProp] == undefined) {
-            this[evalProp] = SimpleException.prototype.isException;
-        }
-    }
-
-    get stack(): string {
-        return this.___e__.stack;
+        return <any>new _Error(this, errorName, message);
     }
 
     /**
@@ -64,7 +81,7 @@ export class SimpleException implements ExceptionLike {
      * Converts an Error object into an Exception if it is not already.
      * @param error The Error object to convert.
      */
-    static convert(error: Error): ExceptionLike {
+    static convert(error: Error): SimpleException {
         if (error == null) throw new SimpleException("ArgumentNull", 'The argument "error" cannot be null.');
         if (!SimpleException.isError(error)) throw new SimpleException("Argument", 'The argument "error" is invalid.');
         let evalProp = "is" + error.name + "Exception";

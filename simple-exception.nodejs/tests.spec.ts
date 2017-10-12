@@ -16,6 +16,10 @@ export class Exception extends SimpleException {
     constructor(errorName: string, message?: string) {
         super(errorName, message);
     }
+
+    get customPropertyOne(): string {
+        return "Exception.customPropertyOne value";
+    }    
 }
 
 class FurtherExtendedException extends Exception {
@@ -23,12 +27,19 @@ class FurtherExtendedException extends Exception {
         super("FurtherExtended", message)
     }
 
-    get customProperty(): string {
-        return "FurtherExtendedException.customProperty value";
+    get customPropertyTwo(): string {
+        return "FurtherExtendedException.customPropertyTwo value";
     }
 }
 
 @suite class SimpleExceptionTests {
+    // @test("Error Constructor") ErrorConstructor() {
+    //     let e = new FurtherExtendedException("Test");
+    //     console.log("*** e.name = " + e.name);
+    //     console.log("*** e.message = " + e.message);
+    //     console.log(e.stack);
+    // }
+
     @test("Is Error Native") IsErrorNative() {
         let e = new Error();
         expect(SimpleException.isError(e)).to.equal(true);
@@ -85,6 +96,7 @@ class FurtherExtendedException extends Exception {
         } catch (e) {
             e = SimpleException.convert(e);
             expect(e.toString()).to.equal("Error: Message");            
+            // console.log(e.stack);
         }
     }
 
@@ -94,6 +106,7 @@ class FurtherExtendedException extends Exception {
         } catch (e) {
             expect(e.toString()).to.equal("InvalidOperation Error: Message");
             expect(typeof(e.stack)).to.equal("string");
+            // console.log(e.stack);
         }
     }
 
@@ -114,7 +127,8 @@ class FurtherExtendedException extends Exception {
         } catch (e) {
             assertException(e, "FurtherExtended");
             expect(e.toString()).to.equal("FurtherExtended Error: A custom message");
-            expect(e.customProperty).to.equal("FurtherExtendedException.customProperty value");
+            expect(e.customPropertyOne).to.equal("Exception.customPropertyOne value");
+            expect(e.customPropertyTwo).to.equal("FurtherExtendedException.customPropertyTwo value");
             expect(typeof(e.stack)).to.equal("string");
         }
     }

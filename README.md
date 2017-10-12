@@ -11,13 +11,17 @@ npm install @brycemarshall/simple-exception
 ```ts
 export interface ExceptionLike extends Error {
     readonly isException: boolean;
+    readonly stack: string;
     toString(): string;
 }
 /**
  * The base class for custom error types implementing the standard ECMAScript Error interface.
  * Instances of this type may be instantiated directly (without subclassing) in order to create custom error instances.
  */
-export declare class SimpleException extends Error implements ExceptionLike {
+export declare class SimpleException implements ExceptionLike {
+    readonly name: string;
+    readonly message: string;
+    readonly stack: string;
     /**
      * Creates a new SimpleException instance.
      * @param errorName The name (implied type) of the Error object implemented by this instance.
@@ -36,7 +40,7 @@ export declare class SimpleException extends Error implements ExceptionLike {
      * Converts an Error object into an Exception if it is not already.
      * @param error The Error object to convert.
      */
-    static convert(error: Error): ExceptionLike;
+    static convert(error: Error): SimpleException;
     /**
      * Returns true if the specified instance is an Error object, otherwise returns false.
      * @param value The value to test.
