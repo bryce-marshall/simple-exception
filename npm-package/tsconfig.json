@@ -11,7 +11,7 @@
         "pretty": true
     },
     "include": [
-        "./simple-exception.nodejs/package-src"
+        "../simple-exception.nodejs/package-src"
     ],
     "exclude": [
         ".vscode",
